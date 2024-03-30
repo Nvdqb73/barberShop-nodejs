@@ -4,6 +4,7 @@
 #config
 .prettierrc
 .vscode
+.api.http
 # Logs
 logs
 *.log
