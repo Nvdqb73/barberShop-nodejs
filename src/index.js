@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
 
+const db = require('./config/db');
 const route = require('./routes');
 
 const app = express();
@@ -13,6 +14,9 @@ app.use(
         methods: ['GET', 'POST', 'PUT', 'DELETE'],
     }),
 );
+
+// ConnectDb
+db.connect();
 
 // Check data from client
 app.use(express.json());
