@@ -13,11 +13,20 @@ class UserController {
             });
         }
 
-        const response = await User.create(req.body);
-        return res.status(200).json({
-            success: response ? true : false,
-            response,
-        });
+        const user = await User.findOne({ $or: [{ username }, { email }] });
+        if (user) {
+            if (user?.username === username && user?.email === email)
+                throw new Error('Username & Email already exists!!');
+            else if (user?.username === username) throw new Error('Username already exists!!');
+            else throw new Error('Email already exists!!');
+        } else {
+            const newUser = await User.create(req.body);
+            return res.status(200).json({
+                success: newUser ? true : false,
+                mes: newUser ? 'Register is successfully' : 'Something went wrong',
+                newUser,
+            });
+        }
     });
 }
 
