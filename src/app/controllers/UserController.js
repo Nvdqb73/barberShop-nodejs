@@ -1,5 +1,6 @@
 const asyncHandler = require('express-async-handler');
 const User = require('../models/User');
+const { generateAccessToken, generateRefreshToken } = require('../middlewares/jwt');
 
 class UserController {
     // [POST] /api/v1/users/register
@@ -27,6 +28,49 @@ class UserController {
                 newUser,
             });
         }
+    });
+
+    // [POST] /api/v1/users/login
+    login = asyncHandler(async (req, res) => {
+        const { username, password } = req.body;
+
+        if (!username || !password) {
+            return res.status(400).json({
+                success: false,
+                mes: 'Missing inputs!',
+            });
+        }
+        const user = await User.findOne({ username });
+        if (user) {
+            if (await user.isCheckPassword(password)) {
+                const { password, role, ...userData } = user.toObject();
+                // create accessToken
+                const accessToken = generateAccessToken(userData?._id, role);
+                // create refreshToken
+                const refreshToken = generateRefreshToken(userData?._id);
+                // save refreshToken in db
+                await User.findByIdAndUpdate(userData?._id, { refreshToken }, { new: true });
+                // save refreshToken in cookie
+                res.cookie('refreshToken', refreshToken, { httpOnly: true, maxAge: 7 * 24 * 60 * 60 * 1000 });
+
+                return res.status(200).json({
+                    success: true,
+                    accessToken,
+                    userData,
+                });
+            } else throw new Error('Invalid password!');
+        } else throw new Error('Invalid username!');
+    });
+
+    // [GET] /api/v1/users/userCurrent
+    getUserCurrent = asyncHandler(async (req, res) => {
+        const { _id } = req.user;
+        const user = await User.findById({ _id }).select('-refreshToken -password -role');
+
+        return res.status(200).json({
+            success: user ? true : false,
+            result: user ? user : 'User not found!',
+        });
     });
 }
 
