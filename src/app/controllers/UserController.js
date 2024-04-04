@@ -82,6 +82,24 @@ class UserController {
             newAccessToken: response ? generateAccessToken(response.id, response.role) : 'Refresh token not matched',
         });
     });
+
+    // [GET] /api/v1/users/logout
+    logout = asyncHandler(async (req, res, next) => {
+        const cookie = req.cookies;
+        if (!cookie || !cookie.refreshToken) throw new Error('No refresh token in cookie');
+        // delete refresh token db
+        await User.findOneAndUpdate({ refreshToken: cookie.refreshToken }, { refreshToken: '' }, { new: true });
+        // delete refresh token cookie
+        res.clearCookie('refreshToken', {
+            httpOnly: true,
+            secure: true,
+        });
+
+        return res.status(200).json({
+            success: true,
+            mes: 'Logout is done',
+        });
+    });
 }
 
 module.exports = new UserController();
