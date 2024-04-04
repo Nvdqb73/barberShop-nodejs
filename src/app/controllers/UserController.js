@@ -136,7 +136,6 @@ class UserController {
 
     // [GET] /api/v1/users/restPassword
     restPassword = asyncHandler(async (req, res, next) => {
-        // const { resetToken } = req.params;
         const { password, token } = req.body;
         if (!password || !token) throw new Error('Missing inputs');
         const passwordResetToken = crypto.createHash('sha256').update(token).digest('hex');
