@@ -9,10 +9,9 @@ const verifyAccessToken = asyncHandler(async (req, res, next) => {
             if (err) {
                 return res.status(401).json({
                     success: false,
-                    mes: 'invalid access token',
+                    mes: 'Invalid access token!',
                 });
             }
-            console.log(decode);
             req.user = decode;
             next();
         });
@@ -24,4 +23,22 @@ const verifyAccessToken = asyncHandler(async (req, res, next) => {
     }
 });
 
-module.exports = { verifyAccessToken };
+const verifyRefreshToken = asyncHandler(async (req, res, next) => {
+    const cookie = req.cookies;
+    if (!cookie && !cookie.refreshToken) throw new Error('No refresh token in cookie');
+    jwt.verify(cookie.refreshToken, process.env.SECRET_KEY, (err, decode) => {
+        if (err) {
+            return res.status(401).json({
+                success: false,
+                mes: 'Invalid refresh token!',
+            });
+        }
+        req.user = {
+            _id: decode._id,
+            refreshToken: cookie.refreshToken,
+        };
+        next();
+    });
+});
+
+module.exports = { verifyAccessToken, verifyRefreshToken };

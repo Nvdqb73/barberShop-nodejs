@@ -1,10 +1,11 @@
 const asyncHandler = require('express-async-handler');
+const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const { generateAccessToken, generateRefreshToken } = require('../middlewares/jwt');
 
 class UserController {
     // [POST] /api/v1/users/register
-    register = asyncHandler(async (req, res) => {
+    register = asyncHandler(async (req, res, next) => {
         const { username, email, password } = req.body;
 
         if (!username || !email || !password) {
@@ -31,7 +32,7 @@ class UserController {
     });
 
     // [POST] /api/v1/users/login
-    login = asyncHandler(async (req, res) => {
+    login = asyncHandler(async (req, res, next) => {
         const { username, password } = req.body;
 
         if (!username || !password) {
@@ -63,13 +64,22 @@ class UserController {
     });
 
     // [GET] /api/v1/users/userCurrent
-    getUserCurrent = asyncHandler(async (req, res) => {
+    getUserCurrent = asyncHandler(async (req, res, next) => {
         const { _id } = req.user;
         const user = await User.findById({ _id }).select('-refreshToken -password -role');
 
         return res.status(200).json({
             success: user ? true : false,
             result: user ? user : 'User not found!',
+        });
+    });
+
+    // [GET] /api/v1/users/refreshToken
+    refreshAccessToken = asyncHandler(async (req, res, next) => {
+        const response = await User.findOne({ _id: req.user._id, refreshToken: req.user.refreshToken });
+        return res.status(200).json({
+            success: response ? true : false,
+            newAccessToken: response ? generateAccessToken(response.id, response.role) : 'Refresh token not matched',
         });
     });
 }
