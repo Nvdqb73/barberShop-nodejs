@@ -118,12 +118,9 @@ class UserController {
         if (!user) throw new Error('User not found!');
         const resetToken = user.createPasswordChangedToken();
         await user.save();
-
-        const html = `Xin vui lòng click vào link dưới đấy để thay đổi mật khẩu của bạn.Link này sẽ hết hạn sau 15 phút kể từ bây giờ. <a href=${process.env.SERVER_URL}/api/v1/users/reset-password/${resetToken}>Click here</a>`;
-
         const data = {
             email,
-            html,
+            resetToken,
         };
 
         const info = await sendMail(data);
