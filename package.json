@@ -22,7 +22,8 @@
         "express": "^4.19.2",
         "express-async-handler": "^1.2.0",
         "jsonwebtoken": "^9.0.2",
-        "mongoose": "^8.2.4"
+        "mongoose": "^8.2.4",
+        "nodemailer": "^6.9.13"
     },
     "devDependencies": {
         "husky": "^9.0.11",
