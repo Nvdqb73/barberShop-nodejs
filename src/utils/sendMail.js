@@ -1,7 +1,7 @@
 const nodemailer = require('nodemailer');
 const asyncHandler = require('express-async-handler');
 
-const sendMail = asyncHandler(async ({ email, html }) => {
+const sendMail = asyncHandler(async ({ email, resetToken }) => {
     const transporter = nodemailer.createTransport({
         host: 'smtp.gmail.com',
         port: 587,
@@ -19,7 +19,7 @@ const sendMail = asyncHandler(async ({ email, html }) => {
             from: '"BarberShop 👻" <no-reply@barbarShop.email>', // sender address
             to: email, // list of receivers
             subject: 'Forgot password ✔', // Subject line
-            html: html, // html body
+            html: `Xin vui lòng click vào link dưới đấy để thay đổi mật khẩu của bạn.Link này sẽ hết hạn sau 15 phút kể từ bây giờ. <a href=${process.env.SERVER_URL}/api/v1/users/resetpassword/${resetToken}>Click here</a>`, // html body
         });
 
         return info;

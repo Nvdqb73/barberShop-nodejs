@@ -46,15 +46,15 @@ class UserController {
         const user = await User.findOne({ username });
         if (user) {
             if (await user.isCheckPassword(password)) {
-                const { password, role, ...userData } = user.toObject();
+                const { password, role, refreshToken, ...userData } = user.toObject();
                 // create accessToken
                 const accessToken = generateAccessToken(userData?._id, role);
                 // create refreshToken
-                const refreshToken = generateRefreshToken(userData?._id);
+                const refreshTokenNew = generateRefreshToken(userData?._id);
                 // save refreshToken in db
-                await User.findByIdAndUpdate(userData?._id, { refreshToken }, { new: true });
+                await User.findByIdAndUpdate(userData?._id, { refreshToken: refreshTokenNew }, { new: true });
                 // save refreshToken in cookie
-                res.cookie('refreshToken', refreshToken, { httpOnly: true, maxAge: 7 * 24 * 60 * 60 * 1000 });
+                res.cookie('refreshToken', refreshTokenNew, { httpOnly: true, maxAge: 7 * 24 * 60 * 60 * 1000 });
 
                 return res.status(200).json({
                     success: true,
@@ -76,7 +76,7 @@ class UserController {
         });
     });
 
-    // [GET] /api/v1/users/refreshToken
+    // [POST] /api/v1/users/refreshToken
     refreshAccessToken = asyncHandler(async (req, res, next) => {
         const response = await User.findOne({ _id: req.user._id, refreshToken: req.user.refreshToken });
         return res.status(200).json({
@@ -118,12 +118,9 @@ class UserController {
         if (!user) throw new Error('User not found!');
         const resetToken = user.createPasswordChangedToken();
         await user.save();
-
-        const html = `Xin vui lòng click vào link dưới đấy để thay đổi mật khẩu của bạn.Link này sẽ hết hạn sau 15 phút kể từ bây giờ. <a href=${process.env.SERVER_URL}/api/v1/users/reset-password/${resetToken}>Click here</a>`;
-
         const data = {
             email,
-            html,
+            resetToken,
         };
 
         const info = await sendMail(data);
@@ -134,7 +131,7 @@ class UserController {
         });
     });
 
-    // [GET] /api/v1/users/restPassword
+    // [PUT] /api/v1/users/restPassword
     restPassword = asyncHandler(async (req, res, next) => {
         const { password, token } = req.body;
         if (!password || !token) throw new Error('Missing inputs');
@@ -149,6 +146,48 @@ class UserController {
         return res.status(200).json({
             success: user ? true : false,
             mes: user ? 'Updated password done' : 'something went wrong',
+        });
+    });
+
+    // [GET] /api/v1/users/getUsers
+    getUsers = asyncHandler(async (req, res, next) => {
+        const response = await User.find({}).select('-refreshToken -password -role');
+        return res.status(200).json({
+            success: response ? true : false,
+            users: response,
+        });
+    });
+
+    // [DELETE] /api/v1/users/
+    deleteUser = asyncHandler(async (req, res, next) => {
+        const { _id } = req.query;
+        if (!_id) throw new Error('Missing inputs');
+        const response = await User.findByIdAndDelete({ _id });
+        return res.status(200).json({
+            success: response ? true : false,
+            deleteUser: response ? `User with useName: ${response.username} delete` : 'No user delete',
+        });
+    });
+
+    // [PUT] /api/v1/users/userCurrent
+    updateUser = asyncHandler(async (req, res, next) => {
+        const { _id } = req.user;
+        if (!_id || Object.keys(req.body).length === 0) throw new Error('Missing inputs');
+        const response = await User.findByIdAndUpdate(_id, req.body, { new: true }).select('-password, -role');
+        return res.status(200).json({
+            success: response ? true : false,
+            UpdateUser: response ? response : 'Some thing went wrong',
+        });
+    });
+
+    // [PUT] /api/v1/users/updateUserByAdmin
+    updateUserByAdmin = asyncHandler(async (req, res, next) => {
+        const { uid } = req.params;
+        if (Object.keys(req.body).length === 0) throw new Error('Missing inputs');
+        const response = await User.findByIdAndUpdate(uid, req.body, { new: true }).select('-password, -role');
+        return res.status(200).json({
+            success: response ? true : false,
+            UpdateUser: response ? response : 'Some thing went wrong',
         });
     });
 }
