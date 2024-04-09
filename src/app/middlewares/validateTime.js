@@ -1,6 +1,6 @@
 const asyncHandler = require('express-async-handler');
 
-const validateTime = asyncHandler(async (req, res, next) => {
+const validateTimeWorkingHour = asyncHandler(async (req, res, next) => {
     if (Object.keys(req.body).length === 0) throw new Error('Missing inputs');
     const { startTime, endTime } = req.body;
     const timeRegex = /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/;
@@ -12,4 +12,4 @@ const validateTime = asyncHandler(async (req, res, next) => {
     next();
 });
 
-module.exports = { validateTime };
+module.exports = { validateTimeWorkingHour };
