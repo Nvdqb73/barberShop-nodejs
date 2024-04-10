@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { verifyAccessToken } = require('../app/middlewares/verifyToken');
 const { isAdmin } = require('../app/middlewares/verifyPermissions');
-const { validateTimeWorkingHour } = require('../app/middlewares/validateTime');
+const { validateTimeWorkingHour } = require('../app/middlewares/validate');
 
 const workingHourController = require('../app/controllers/WorkingHourController');
 
