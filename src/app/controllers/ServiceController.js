@@ -57,7 +57,7 @@ class ServiceController {
         const softDeletedService = await Service.deleteById(sId);
         return res.status(softDeletedService ? 200 : 404).json({
             success: softDeletedService ? true : false,
-            serviceData: softDeletedService ? softDeletedService : 'Cannot delete service',
+            serviceData: softDeletedService ? softDeletedService : 'Cannot soft delete service',
         });
     });
 
@@ -67,7 +67,7 @@ class ServiceController {
         const deletedService = await Service.findByIdAndDelete(sId);
         return res.status(deletedService ? 200 : 404).json({
             success: deletedService ? true : false,
-            serviceData: deletedService ? deletedService : 'Cannot delete service',
+            serviceData: deletedService ? deletedService : 'Cannot force destroy service',
         });
     });
     // [PATCH] /api/v1/services/:sId/restore
@@ -76,7 +76,7 @@ class ServiceController {
         const restoreService = await Service.restore({ _id: sId });
         return res.status(restoreService ? 200 : 404).json({
             success: restoreService ? true : false,
-            serviceData: restoreService ? restoreService : 'Cannot delete service',
+            serviceData: restoreService ? restoreService : 'Cannot restore service',
         });
     });
 }
