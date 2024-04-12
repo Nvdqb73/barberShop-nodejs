@@ -4,7 +4,6 @@ const asyncHandler = require('express-async-handler');
 class EmployeeController {
     // [POST] /api/v1/employees/create
     create = asyncHandler(async (req, res, next) => {
-        if (Object.keys(req.body).length === 0) throw new Error('Missing inputs');
         const newEmployee = await Employee.create(req.body);
         return res.status(200).json({
             success: newEmployee ? true : false,
@@ -34,7 +33,6 @@ class EmployeeController {
     // [UPDATE] /api/v1/employees/:eId
     update = asyncHandler(async (req, res, next) => {
         const { eId } = req.params;
-        if (Object.keys(req.body).length === 0) throw new Error('Missing inputs');
         const updatedEmployee = await Employee.findByIdAndUpdate(eId, req.body, { new: true });
         return res.status(updatedEmployee ? 200 : 404).json({
             success: updatedEmployee ? true : false,
