@@ -5,6 +5,7 @@ const serviceRouter = require('./services');
 const branchRouter = require('./branch');
 const employeeRouter = require('./employees');
 const customerRouter = require('./customers');
+const bookingRouter = require('./bookings');
 function route(app) {
     app.use('/api/v1/users', userRouter);
     app.use('/api/v1/workingHours', workingHourRouter);
@@ -12,6 +13,7 @@ function route(app) {
     app.use('/api/v1/branch', branchRouter);
     app.use('/api/v1/employees', employeeRouter);
     app.use('/api/v1/customers', customerRouter);
+    app.use('/api/v1/bookings', bookingRouter);
 
     app.use(notFound);
     app.use(handleError);
