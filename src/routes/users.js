@@ -2,11 +2,12 @@ const express = require('express');
 const router = express.Router();
 const { verifyAccessToken, verifyRefreshToken } = require('../app/middlewares/verifyToken');
 const { isAdmin } = require('../app/middlewares/verifyPermissions');
+const { validateLogin, validateRegisterUser } = require('../app/middlewares/validate');
 
 const userController = require('../app/controllers/UserController');
 
-router.post('/register', userController.register);
-router.post('/login', userController.login);
+router.post('/register', validateRegisterUser(), userController.register);
+router.post('/login', validateLogin(), userController.login);
 router.get('/userCurrent', [verifyAccessToken], userController.getUserCurrent);
 router.post('/refreshToken', [verifyRefreshToken], userController.refreshAccessToken);
 router.get('/logout', userController.logout);

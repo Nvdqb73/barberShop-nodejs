@@ -1,4 +1,37 @@
 const asyncHandler = require('express-async-handler');
+const { body } = require('express-validator');
+
+const validateRegisterUser = () => {
+    return [
+        body('username', 'username does not Empty').not().isEmpty(),
+        body('username', 'username must be Alphanumeric').isAlphanumeric(),
+        body('username', 'Username more than 6 digits').isLength({ min: 6 }),
+        body('email', 'Email dose not Empty').not().isEmpty(),
+        body('email', 'Invalid email').isEmail(),
+        body('password', 'password more than 6 digits').isLength({ min: 6 }),
+        body('password', 'Password does not meet the strength requirements').isStrongPassword({
+            minNumbers: 1,
+            minSymbols: 1,
+            minLowercase: 1,
+            minUppercase: 1,
+        }),
+    ];
+};
+
+const validateLogin = () => {
+    return [
+        body('username', 'username does not Empty').not().isEmpty(),
+        body('username', 'username must be Alphanumeric').isAlphanumeric(),
+        body('username', 'Username more than 6 digits').isLength({ min: 6 }),
+        body('password', 'password more than 6 digits').isLength({ min: 6 }),
+        body('password', 'Password does not meet the strength requirements').isStrongPassword({
+            minNumbers: 1,
+            minSymbols: 1,
+            minLowercase: 1,
+            minUppercase: 1,
+        }),
+    ];
+};
 
 const validateTime = asyncHandler(async (req, res, next) => {
     if (Object.keys(req.body).length === 0) throw new Error('Missing inputs');
@@ -47,4 +80,4 @@ const validatePhone = asyncHandler(async (req, res, next) => {
     next();
 });
 
-module.exports = { validateTime, validatePhone };
+module.exports = { validateTime, validatePhone, validateRegisterUser, validateLogin };

@@ -2,18 +2,23 @@ const mongoose = require('mongoose');
 const uniqueValidator = require('mongoose-unique-validator');
 const mongooseDelete = require('mongoose-delete');
 
-var detailServiceSchema = new mongoose.Schema({
-    bookingId: {
-        type: mongoose.Types.ObjectId,
-        ref: 'Booking',
-        required: [true, 'detailService bookingId is required'],
+var detailServiceSchema = new mongoose.Schema(
+    {
+        bookingId: {
+            type: mongoose.Types.ObjectId,
+            ref: 'Booking',
+            required: [true, 'detailService bookingId is required'],
+        },
+        serviceId: {
+            type: mongoose.Types.ObjectId,
+            ref: 'Service',
+            required: [true, 'detailService serviceId is required'],
+        },
     },
-    serviceId: {
-        type: mongoose.Types.ObjectId,
-        ref: 'Service',
-        required: [true, 'detailService serviceId is required'],
+    {
+        timestamps: true,
     },
-});
+);
 
 //Add plugins
 detailServiceSchema.plugin(uniqueValidator, { message: 'Error, expected {PATH} to be unique.' });

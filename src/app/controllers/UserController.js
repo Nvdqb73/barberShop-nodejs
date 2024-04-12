@@ -4,18 +4,18 @@ const User = require('../models/User');
 const { generateAccessToken, generateRefreshToken } = require('../middlewares/jwt');
 const sendMail = require('../../utils/sendMail');
 const crypto = require('crypto');
+const { validationResult } = require('express-validator');
 
 class UserController {
     // [POST] /api/v1/users/register
     register = asyncHandler(async (req, res, next) => {
-        const { username, email, password } = req.body;
-
-        if (!username || !email || !password) {
-            return res.status(400).json({
-                success: false,
-                mes: 'Missing inputs!',
-            });
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            res.status(422).json({ errors: errors.array() });
+            return;
         }
+
+        const { username, email, password } = req.body;
 
         const user = await User.findOne({ $or: [{ username }, { email }] });
         if (user) {
@@ -35,14 +35,13 @@ class UserController {
 
     // [POST] /api/v1/users/login
     login = asyncHandler(async (req, res, next) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            res.status(422).json({ errors: errors.array() });
+            return;
+        }
         const { username, password } = req.body;
 
-        if (!username || !password) {
-            return res.status(400).json({
-                success: false,
-                mes: 'Missing inputs!',
-            });
-        }
         const user = await User.findOne({ username });
         if (user) {
             if (await user.isCheckPassword(password)) {
