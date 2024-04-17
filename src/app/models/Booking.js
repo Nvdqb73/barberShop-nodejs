@@ -4,27 +4,31 @@ const mongooseDelete = require('mongoose-delete');
 
 var bookingSchema = new mongoose.Schema(
     {
-        appointmentDate: {
+        startDate: {
             type: Date,
-            required: [true, 'Booking appointmentDate is required'],
-        },
-        startTime: {
-            type: String,
             required: [true, 'Booking startTime is required'],
-            validate: /([01]?[0-9]|2[0-3]):[0-5][0-9]/,
         },
-        endTime: {
-            type: String,
+        endDate: {
+            type: Date,
             required: [true, 'Booking endTime is required'],
-            validate: /([01]?[0-9]|2[0-3]):[0-5][0-9]/,
         },
-        note: {
+        description: {
             type: String,
         },
         customerId: {
             type: mongoose.Types.ObjectId,
             ref: 'Customer',
             required: [true, 'Booking customerId is required'],
+        },
+        branchId: {
+            type: mongoose.Types.ObjectId,
+            ref: 'Branch',
+            required: [true, 'Booking branchId is required'],
+        },
+        employeeId: {
+            type: mongoose.Types.ObjectId,
+            ref: 'Employee',
+            required: [true, 'Booking employeeId is required'],
         },
     },
     {

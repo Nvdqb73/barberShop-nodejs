@@ -8,7 +8,6 @@ var userSchema = new mongoose.Schema(
         username: {
             type: String,
             required: [true, 'User username is required'],
-            unique: true,
         },
         email: {
             type: String,
@@ -21,6 +20,9 @@ var userSchema = new mongoose.Schema(
         password: {
             type: String,
             required: [true, 'User password is required'],
+        },
+        googleId: {
+            type: String,
         },
         role: {
             type: String,

@@ -20,9 +20,8 @@ const validateRegisterUser = () => {
 
 const validateLogin = () => {
     return [
-        body('username', 'username does not Empty').not().isEmpty(),
-        body('username', 'username must be Alphanumeric').isAlphanumeric(),
-        body('username', 'Username more than 6 digits').isLength({ min: 6 }),
+        body('email', 'Email dose not Empty').not().isEmpty(),
+        body('email', 'Invalid email').isEmail(),
         body('password', 'password more than 6 digits').isLength({ min: 6 }),
         body('password', 'Password does not meet the strength requirements').isStrongPassword({
             minNumbers: 1,

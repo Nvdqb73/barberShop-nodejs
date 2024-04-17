@@ -6,11 +6,11 @@ const { validateTime } = require('../app/middlewares/validate');
 
 const bookingController = require('../app/controllers/BookingController');
 
-router.post('/create', [verifyAccessToken, isAdmin, validateTime], bookingController.create);
+router.post('/create', bookingController.create);
 router.get('/trash', [verifyAccessToken, isAdmin], bookingController.getTrash);
 router.get('/', bookingController.getAll);
 router.get('/:bId', bookingController.getById);
-router.put('/:bId', [verifyAccessToken, isAdmin, validateTime], bookingController.update);
+router.put('/:bId', [verifyAccessToken, isAdmin], bookingController.update);
 router.patch('/:bId/restore', bookingController.restore);
 router.delete('/:bId', bookingController.softDelete);
 router.delete('/:bId/force', [verifyAccessToken, isAdmin], bookingController.forceDestroy);

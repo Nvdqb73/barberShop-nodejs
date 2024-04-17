@@ -15,6 +15,7 @@
         "src/**/*.{js,json}": "prettier --write --single-quote --trailing-comma all --tab-width 4"
     },
     "dependencies": {
+        "@googleapis/calendar": "^9.7.0",
         "bcrypt": "^5.1.1",
         "cookie-parser": "^1.4.6",
         "cors": "^2.8.5",
@@ -22,6 +23,8 @@
         "express": "^4.19.2",
         "express-async-handler": "^1.2.0",
         "express-validator": "^7.0.1",
+        "google-auth-library": "^9.7.0",
+        "googleapis": "^134.0.0",
         "jsonwebtoken": "^9.0.2",
         "mongoose": "^8.2.4",
         "mongoose-delete": "^1.0.2",

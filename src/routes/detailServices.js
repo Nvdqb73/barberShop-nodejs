@@ -5,7 +5,7 @@ const { isAdmin } = require('../app/middlewares/verifyPermissions');
 
 const detailServiceController = require('../app/controllers/DetailServiceController');
 
-router.post('/create', [verifyAccessToken, isAdmin], detailServiceController.create);
+router.post('/create', detailServiceController.create);
 router.get('/trash', [verifyAccessToken, isAdmin], detailServiceController.getTrash);
 router.get('/', detailServiceController.getAll);
 router.get('/:dsId', detailServiceController.getById);

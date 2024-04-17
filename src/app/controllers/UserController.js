@@ -17,7 +17,7 @@ class UserController {
 
         const { username, email, password } = req.body;
 
-        const user = await User.findOne({ $or: [{ username }, { email }] });
+        const user = await User.findOne({ email });
         if (user) {
             if (user?.username === username && user?.email === email)
                 throw new Error('Username & Email already exists!!');
@@ -40,9 +40,9 @@ class UserController {
             res.status(422).json({ errors: errors.array() });
             return;
         }
-        const { username, password } = req.body;
+        const { email, password } = req.body;
 
-        const user = await User.findOne({ username });
+        const user = await User.findOne({ email });
         if (user) {
             if (await user.isCheckPassword(password)) {
                 const { password, role, refreshToken, ...userData } = user.toObject();
