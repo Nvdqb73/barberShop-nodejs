@@ -121,9 +121,7 @@ class UserController {
             email,
             resetToken,
         };
-
         const info = await sendMail(data);
-
         return res.status(200).json({
             success: true,
             info,
