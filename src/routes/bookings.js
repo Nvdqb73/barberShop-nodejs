@@ -2,11 +2,11 @@ const express = require('express');
 const router = express.Router();
 const { verifyAccessToken } = require('../app/middlewares/verifyToken');
 const { isAdmin } = require('../app/middlewares/verifyPermissions');
-const { validateTime } = require('../app/middlewares/validate');
+const { updateBookingEndTime } = require('../app/middlewares/validate');
 
 const bookingController = require('../app/controllers/BookingController');
 
-router.post('/create', bookingController.create);
+router.post('/create', [updateBookingEndTime], bookingController.create);
 router.get('/trash', [verifyAccessToken, isAdmin], bookingController.getTrash);
 router.get('/', bookingController.getAll);
 router.get('/:bId', bookingController.getById);

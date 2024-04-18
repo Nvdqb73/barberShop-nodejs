@@ -4,8 +4,7 @@ const asyncHandler = require('express-async-handler');
 class BookingController {
     // [POST] /api/v1/bookings/create
     create = asyncHandler(async (req, res, next) => {
-        if (Object.keys(req.body).length === 0) throw new Error('Missing inputs');
-        const newBooking = await Booking.create(req.body);
+        const newBooking = await Booking.create(req?.bookingDataNew);
         return res.status(200).json({
             success: newBooking ? true : false,
             createdBooking: newBooking ? newBooking : 'Cannot create new booking',
