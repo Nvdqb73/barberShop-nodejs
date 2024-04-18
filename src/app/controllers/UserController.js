@@ -61,7 +61,7 @@ class UserController {
                     userData,
                 });
             } else throw new Error('Invalid password!');
-        } else throw new Error('Invalid username!');
+        } else throw new Error('Invalid email!');
     });
 
     // [GET] /api/v1/users/userCurrent

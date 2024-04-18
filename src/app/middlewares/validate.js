@@ -79,4 +79,32 @@ const validatePhone = asyncHandler(async (req, res, next) => {
     next();
 });
 
-module.exports = { validateTime, validatePhone, validateRegisterUser, validateLogin };
+const updateBookingEndTime = asyncHandler(async (req, res, next) => {
+    if (Object.keys(req.body).length === 0) throw new Error('Missing inputs');
+    const { startDate, endDate, startDateVip, ...bookingData } = req.body;
+    const timeOne = new Date(startDate);
+    const timeTow = new Date(endDate);
+
+    const hours = timeTow.getUTCHours();
+    const minutes = timeTow.getUTCMinutes();
+    const seconds = timeTow.getUTCSeconds();
+
+    timeOne.setUTCHours(timeOne.getUTCHours() + hours);
+    timeOne.setUTCMinutes(timeOne.getUTCMinutes() + minutes);
+    timeOne.setUTCSeconds(timeOne.getUTCSeconds() + seconds);
+
+    const endTime = timeOne.toISOString().substr(11, 8);
+    const endDateTime = startDateVip + 'T' + endTime + 'Z';
+
+    const bookingDataNew = {
+        startDate,
+        endDate: endDateTime,
+        ...bookingData,
+    };
+
+    req.bookingDataNew = bookingDataNew;
+
+    next();
+});
+
+module.exports = { validateTime, validatePhone, validateRegisterUser, validateLogin, updateBookingEndTime };
