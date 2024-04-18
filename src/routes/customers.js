@@ -5,10 +5,10 @@ const { isAdmin, isUIdExistEmployee } = require('../app/middlewares/verifyPermis
 
 const customerController = require('../app/controllers/CustomerController');
 
-router.post('/create', [verifyAccessToken, isAdmin, isUIdExistEmployee], customerController.create);
+router.post('/create', [verifyAccessToken, isUIdExistEmployee], customerController.create);
 router.get('/', customerController.getAll);
 router.get('/:cId', customerController.getById);
-router.put('/:cId', [verifyAccessToken, isAdmin, isUIdExistEmployee], customerController.update);
+router.put('/:cId', [verifyAccessToken, isUIdExistEmployee], customerController.update);
 router.delete('/:cId', [verifyAccessToken, isAdmin], customerController.delete);
 
 module.exports = router;

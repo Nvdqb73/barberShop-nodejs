@@ -6,7 +6,7 @@ const { validatePhone } = require('../app/middlewares/validate');
 
 const branchController = require('../app/controllers/BranchController');
 
-router.post('/create', [verifyAccessToken, isAdmin, validatePhone], branchController.create);
+router.post('/create', [verifyAccessToken, isAdmin], branchController.create);
 router.get('/', branchController.getAll);
 router.get('/:bId', branchController.getById);
 router.put('/:bId', [verifyAccessToken, isAdmin, validatePhone], branchController.update);
