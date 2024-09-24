@@ -1,16 +1,17 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
+const crypto = require('crypto');
+const uniqueValidator = require('mongoose-unique-validator');
 
 var userSchema = new mongoose.Schema(
     {
         username: {
             type: String,
-            required: true,
-            unique: true,
+            required: [true, 'User username is required'],
         },
         email: {
             type: String,
-            required: true,
+            required: [true, 'User email is required'],
             unique: true,
         },
         mobile: {
@@ -18,15 +19,14 @@ var userSchema = new mongoose.Schema(
         },
         password: {
             type: String,
-            required: true,
+            required: [true, 'User password is required'],
+        },
+        googleId: {
+            type: String,
         },
         role: {
             type: String,
             default: 'customer',
-        },
-        cart: {
-            type: Array,
-            default: [],
         },
         address: [{ type: mongoose.Types.ObjectId, ref: 'Address' }],
         wishlist: [{ type: mongoose.Types.ObjectId, ref: 'Product' }],
@@ -64,7 +64,16 @@ userSchema.methods = {
     isCheckPassword: async function (password) {
         return await bcrypt.compare(password, this.password);
     },
+    createPasswordChangedToken: function () {
+        const resetToken = crypto.randomBytes(32).toString('hex');
+        this.passwordResetToken = crypto.createHash('sha256').update(resetToken).digest('hex');
+        this.passwordResetExpires = Date.now() + 15 * 60 * 1000;
+        return resetToken;
+    },
 };
+
+//Add plugins
+userSchema.plugin(uniqueValidator, { message: 'Error, expected {PATH} to be unique.' });
 
 //Export the model
 module.exports = mongoose.model('User', userSchema);
